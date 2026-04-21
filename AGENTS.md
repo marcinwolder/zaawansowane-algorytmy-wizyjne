@@ -9,3 +9,4 @@
 5. Create functions and use them instead of code duplication
 6. Make sure to add parameters for algorithms for optional manual fine-tunning
 7. When calling a function prefer keyword arguments than positional arguments (especially in functions written by you)
+8. Do not make classes for storing function parameters
