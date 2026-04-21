@@ -25,25 +25,25 @@ Reference methods mentioned in the skrypt: Horn–Schunck (HS), Lucas–Kanade (
 
 ### 1.1 Script setup and frame loading
 
-- [ ] Create a new Python script for Task 1.
-- [ ] Load two consecutive frames from a sequence (e.g. frames **150** and **151** from the `highway` sequence). Call the earlier one `I` and the later one `J`.
-- [ ] Optionally downsample both frames (e.g. by a factor of 4) while developing and testing — this makes iteration fast.
-- [ ] Convert both frames to grayscale using `cv2.cvtColor(..., cv2.COLOR_BGR2GRAY)`.
-- [ ] Display `I`, `J`, and the absolute difference `cv2.absdiff(I, J)` to visually confirm that there is meaningful motion between the two frames.
+- [x] Create a new Python script for Task 1.
+- [x] Load two consecutive frames from a sequence (e.g. frames **150** and **151** from the `highway` sequence). Call the earlier one `I` and the later one `J`.
+- [x] Optionally downsample both frames (e.g. by a factor of 4) while developing and testing — this makes iteration fast.
+- [x] Convert both frames to grayscale using `cv2.cvtColor(..., cv2.COLOR_BGR2GRAY)`.
+- [x] Display `I`, `J`, and the absolute difference `cv2.absdiff(I, J)` to visually confirm that there is meaningful motion between the two frames.
 
 ### 1.2 Parameters of the block-matching method
 
-- [ ] Fix the patch (window) size to **7×7**. Define `W2 = 3` (half window size, integer division of 7/2).
-- [ ] Define the search radius: `dX = dY = 3` pixels in each direction. This means each pixel's match is searched in a 7×7 area around its original location in `J`.
+- [x] Fix the patch (window) size to **7×7**. Define `W2 = 3` (half window size, integer division of 7/2).
+- [x] Define the search radius: `dX = dY = 3` pixels in each direction. This means each pixel's match is searched in a 7×7 area around its original location in `J`.
 
 ### 1.3 Outer loops over the image
 
-- [ ] Loop over every pixel `(j, i)` of the image with two nested `for` loops (outer over rows `j`, inner over columns `i`).
-- [ ] Use the boundary condition `W2 <= j < H - W2` and `W2 <= i < W - W2` so that the patch never leaves the image. Do **not** compute flow on the borders.
+- [x] Loop over every pixel `(j, i)` of the image with two nested `for` loops (outer over rows `j`, inner over columns `i`).
+- [x] Use the boundary condition `W2 <= j < H - W2` and `W2 <= i < W - W2` so that the patch never leaves the image. Do **not** compute flow on the borders.
 
 ### 1.4 Cut out the reference patch from `I`
 
-- [ ] Inside the loops, extract the patch:
+- [x] Inside the loops, extract the patch:
 
   ```python
   IO = np.float32(I[j - W2 : j + W2 + 1, i - W2 : i + W2 + 1])
@@ -53,55 +53,55 @@ Reference methods mentioned in the skrypt: Horn–Schunck (HS), Lucas–Kanade (
 
 ### 1.5 Inner loops over the search neighborhood in `J`
 
-- [ ] Add two more nested loops, with offsets `dj` from `-dY` to `+dY` and `di` from `-dX` to `+dX`.
-- [ ] Inside, check that the candidate center `(j + dj, i + di)` is still a valid patch center (boundary check), **or** adjust the outer loop ranges so this check becomes unnecessary.
-- [ ] Extract the candidate patch `JO` from `J` with the same size as `IO` and convert it to `float32`.
+- [x] Add two more nested loops, with offsets `dj` from `-dY` to `+dY` and `di` from `-dX` to `+dX`.
+- [x] Inside, check that the candidate center `(j + dj, i + di)` is still a valid patch center (boundary check), **or** adjust the outer loop ranges so this check becomes unnecessary.
+- [x] Extract the candidate patch `JO` from `J` with the same size as `IO` and convert it to `float32`.
 
 ### 1.6 Compute the similarity between patches
 
-- [ ] Compute a distance between `IO` and `JO`. The skrypt suggests:
+- [x] Compute a distance between `IO` and `JO`. The skrypt suggests:
 
   ```python
   dist = np.sqrt(np.sum(np.square(JO - IO)))
   ```
 
   (Sum of squared differences — SSD — followed by a square root.)
-- [ ] Track the offset `(dj, di)` that yields the **minimum** distance over the whole `(dX, dY)` search area. That offset is the optical-flow vector for pixel `(j, i)`.
+- [x] Track the offset `(dj, di)` that yields the **minimum** distance over the whole `(dX, dY)` search area. That offset is the optical-flow vector for pixel `(j, i)`.
 
 ### 1.7 Store the flow field
 
-- [ ] Before the outer loops, allocate two 2D arrays `u` and `v` with the same height/width as `I`, initialized to zero.
-- [ ] After finding the best offset, store the horizontal component in `u[j, i]` and the vertical component in `v[j, i]` (be consistent about which axis is which — the skrypt uses `u` for horizontal and `v` for vertical).
+- [x] Before the outer loops, allocate two 2D arrays `u` and `v` with the same height/width as `I`, initialized to zero.
+- [x] After finding the best offset, store the horizontal component in `u[j, i]` and the vertical component in `v[j, i]` (be consistent about which axis is which — the skrypt uses `u` for horizontal and `v` for vertical).
 
 ### 1.8 Visualize the flow field using HSV color coding
 
 The idea is to turn the two-channel `(u, v)` field into a color image where **hue encodes the direction** of motion and **saturation encodes the magnitude** (brighter = faster). See the color wheel figure 7.2 in the skrypt.
 
-- [ ] Convert the Cartesian flow `(u, v)` to polar form:
+- [x] Convert the Cartesian flow `(u, v)` to polar form:
 
   ```python
   mag, angle = cv2.cartToPolar(u, v)
   ```
 
-- [ ] Create an empty HSV image with the same spatial shape as `I`, 3 channels, `dtype=np.uint8`.
-- [ ] Set channel 0 (H) to `angle * 90 / np.pi` — OpenCV's hue range is 0–180, so this maps 0–2π onto 0–180.
-- [ ] Set channel 1 (S) to the magnitude normalized to the range 0–255 (e.g. `cv2.normalize(mag, None, 0, 255, cv2.NORM_MINMAX)`).
-- [ ] Set channel 2 (V) to 255.
-- [ ] **Swap S and V** so that zero motion renders as black instead of white (this is the note in the skrypt).
-- [ ] Convert HSV → BGR with `cv2.cvtColor(..., cv2.COLOR_HSV2BGR)` and display the image.
+- [x] Create an empty HSV image with the same spatial shape as `I`, 3 channels, `dtype=np.uint8`.
+- [x] Set channel 0 (H) to `angle * 90 / np.pi` — OpenCV's hue range is 0–180, so this maps 0–2π onto 0–180.
+- [x] Set channel 1 (S) to the magnitude normalized to the range 0–255 (e.g. `cv2.normalize(mag, None, 0, 255, cv2.NORM_MINMAX)`).
+- [x] Set channel 2 (V) to 255.
+- [x] **Swap S and V** so that zero motion renders as black instead of white (this is the note in the skrypt).
+- [x] Convert HSV → BGR with `cv2.cvtColor(..., cv2.COLOR_HSV2BGR)` and display the image.
 
 ### 1.9 Experiments and analysis
 
-- [ ] Try different combinations of image resolution, `W2`, `dX`, `dY` (e.g. half-size image with `W2 = dX = dY = 5`).
-- [ ] At the **original** image resolution, check whether `W2 = dX = dY = 3` is enough or whether you need a larger search area for correct flow. This illustrates why larger displacements require larger windows (and why multi-scale is needed — see Task 2).
-- [ ] Remember: block matching gives **integer-pixel** displacements only — it cannot produce sub-pixel flow like Horn–Schunck or Lucas–Kanade.
+- [x] Try different combinations of image resolution, `W2`, `dX`, `dY` (e.g. half-size image with `W2 = dX = dY = 5`).
+- [x] At the **original** image resolution, check whether `W2 = dX = dY = 3` is enough or whether you need a larger search area for correct flow. This illustrates why larger displacements require larger windows (and why multi-scale is needed — see Task 2).
+- [x] Remember: block matching gives **integer-pixel** displacements only — it cannot produce sub-pixel flow like Horn–Schunck or Lucas–Kanade.
 
 ### 1.10 Reduce spurious matches using the frame difference
 
-- [ ] Compute the absolute difference between `I` and `J` (you already did this for visualization).
-- [ ] Binarize it with an appropriate threshold.
-- [ ] Dilate the binary mask (try several kernel sizes and iteration counts).
-- [ ] Only output flow vectors where the dilated difference mask is non-zero — this suppresses flow estimates in static background regions where any match is likely spurious.
+- [x] Compute the absolute difference between `I` and `J` (you already did this for visualization).
+- [x] Binarize it with an appropriate threshold.
+- [x] Dilate the binary mask (try several kernel sizes and iteration counts).
+- [x] Only output flow vectors where the dilated difference mask is non-zero — this suppresses flow estimates in static background regions where any match is likely spurious.
 
 ---
 
