@@ -204,20 +204,20 @@ After estimating flow at a coarse scale, you want to **move the pixels of `J` ba
 
 ### 3.1 Preparation
 
-- [ ] Reuse (or adapt) your sequence-reading script from previous labs. Make sure it accepts a parameter `iStep` that controls which frames are processed (e.g. every frame, every 2nd, etc.).
-- [ ] Work in grayscale for simplicity.
-- [ ] Read the OpenCV optical flow tutorial and documentation for the API details.
+- [x] Reuse (or adapt) your sequence-reading script from previous labs. Make sure it accepts a parameter `iStep` that controls which frames are processed (e.g. every frame, every 2nd, etc.).
+- [x] Work in grayscale for simplicity.
+- [x] Read the OpenCV optical flow tutorial and documentation for the API details.
 
 ### 3.2 Dense methods — sub-task (a)
 
 Implement the following pattern for each of these algorithms: **Farneback**, **Dual TV-L1**, **PCA Flow**, **DIS Flow**, **Simple Flow**, **Deep Flow**, and the **dense Lucas–Kanade** variant.
 
-- [ ] Load two consecutive frames and convert both to grayscale.
-- [ ] Allocate a two-channel `flow` array to hold `(u, v)`.
-- [ ] Create an instance of the chosen algorithm (e.g. `cv2.FarnebackOpticalFlow_create()` / `cv2.optflow.createOptFlow_DIS()` / etc.).
-- [ ] Call its `.calc(prev, next, flow)` method.
-- [ ] Visualize with the same HSV function from Task 1.
-- [ ] For dense LK specifically, clip the magnitude before HSV mapping to avoid oversaturation:
+- [x] Load two consecutive frames and convert both to grayscale.
+- [x] Allocate a two-channel `flow` array to hold `(u, v)`.
+- [x] Create an instance of the chosen algorithm (e.g. `cv2.FarnebackOpticalFlow_create()` / `cv2.optflow.createOptFlow_DIS()` / etc.).
+- [x] Call its `.calc(prev, next, flow)` method.
+- [x] Visualize with the same HSV function from Task 1.
+- [x] For dense LK specifically, clip the magnitude before HSV mapping to avoid oversaturation:
 
   ```python
   mag[mag > 10] = 10
@@ -225,23 +225,23 @@ Implement the following pattern for each of these algorithms: **Farneback**, **D
 
 For each algorithm note:
 
-- [ ] Runtime per frame pair.
-- [ ] Accuracy around object edges.
-- [ ] Robustness to uniform regions.
+- [x] Runtime per frame pair.
+- [x] Accuracy around object edges.
+- [x] Robustness to uniform regions.
 
 ### 3.3 Sparse Lucas–Kanade — sub-task (b)
 
 Here you compute flow only for a chosen set of points. The skrypt wants a **regular grid** of tracked points rather than Harris/SIFT corners.
 
-- [ ] Generate a grid of points spaced every 10 pixels across the image. The data structure needed by `cv2.calcOpticalFlowPyrLK` is a float array of shape `(N, 1, 2)`.
-- [ ] Call the sparse LK function, e.g.:
+- [x] Generate a grid of points spaced every 10 pixels across the image. The data structure needed by `cv2.calcOpticalFlowPyrLK` is a float array of shape `(N, 1, 2)`.
+- [x] Call the sparse LK function, e.g.:
 
   ```python
   new_points, st, err = cv2.calcOpticalFlowPyrLK(prev, next, points, None, winSize=(15, 15), maxLevel=2, criteria=...)
   ```
 
-- [ ] Understand each parameter (window size, pyramid depth, termination criteria for the iterative solver). Tune them if needed.
-- [ ] Visualize by drawing a line from each `points[i]` to `new_points[i]` only where `st[i] == 1` (successfully tracked):
+- [x] Understand each parameter (window size, pyramid depth, termination criteria for the iterative solver). Tune them if needed.
+- [x] Visualize by drawing a line from each `points[i]` to `new_points[i]` only where `st[i] == 1` (successfully tracked):
 
   ```python
   for jj in range(len(points)):
@@ -249,13 +249,13 @@ Here you compute flow only for a chosen set of points. The skrypt wants a **regu
           cv2.line(img, tuple(points[jj, 0]), tuple(new_points[jj, 0]), (0, 0, 255))
   ```
 
-- [ ] Optionally mark the arrow tail or head with a small dot to show direction.
-- [ ] Optionally filter out vectors with tiny magnitude.
-- [ ] At the end of each frame iteration, **don't forget** to copy the current frame into the "previous frame" variable for the next iteration.
+- [x] Optionally mark the arrow tail or head with a small dot to show direction.
+- [x] Optionally filter out vectors with tiny magnitude.
+- [x] At the end of each frame iteration, **don't forget** to copy the current frame into the "previous frame" variable for the next iteration.
 
 ### 3.4 Comparison
 
-- [ ] Compare the sparse grid-LK output with the dense methods from step 3.2. Which methods cope well with uniform regions? Which are fastest? Which give the cleanest object boundaries?
+- [x] Compare the sparse grid-LK output with the dense methods from step 3.2. Which methods cope well with uniform regions? Which are fastest? Which give the cleanest object boundaries?
 
 ---
 
@@ -313,6 +313,6 @@ This is the core of the analysis.
 
 - [ ] Task 1 completed: working single-scale block-matching flow with HSV visualization, plus frame-difference-based filtering of spurious matches.
 - [ ] Task 2 completed: multi-scale pyramidal block-matching flow that handles large displacements without a huge search window, with warping of the second frame between scales and final accumulation of flow across scales.
-- [ ] Task 3 completed: comparison of at least several OpenCV dense methods (Farneback and others) plus sparse Lucas–Kanade on a regular grid, including runtime and quality notes.
+- [x] Task 3 completed: comparison of at least several OpenCV dense methods (Farneback and others) plus sparse Lucas–Kanade on a regular grid, including runtime and quality notes.
 - [ ] Task 4 (extra) completed: per-object flow statistics combined with MOG-based foreground segmentation, with an attempt to distinguish cars from pedestrians by the standard deviation of their motion angles.
 - [ ] Each task's script saved in the expected format (`.py` or `.ipynb`) and uploaded to the UPeL course platform after the instructor approves the work.
