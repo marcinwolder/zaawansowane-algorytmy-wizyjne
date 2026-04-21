@@ -111,7 +111,7 @@ The idea is to turn the two-channel `(u, v)` field into a color image where **hu
 
 ### 2.1 Refactor Task 1 into reusable functions
 
-- [ ] Wrap the block-matching computation from Task 1 in a function with signature:
+- [x] Wrap the block-matching computation from Task 1 in a function with signature:
 
   ```python
   def of(J_org, I, J, W2=3, dY=3, dX=3):
@@ -120,7 +120,7 @@ The idea is to turn the two-channel `(u, v)` field into a color image where **hu
   ```
 
   `J_org` is only passed in for visualization (to compute `absdiff` against `I` and display the three images). The actual matching happens between `I` and the possibly-warped `J`.
-- [ ] Wrap the HSV visualization from step 1.8 in a function:
+- [x] Wrap the HSV visualization from step 1.8 in a function:
 
   ```python
   def vis_flow(u, v, YX, name):
@@ -128,11 +128,11 @@ The idea is to turn the two-channel `(u, v)` field into a color image where **hu
   ```
 
   where `YX` is the `(height, width)` of the image and `name` is the window title (e.g. `'of scale 2'`).
-- [ ] Verify the refactored code produces the same result as Task 1 when run at a single scale.
+- [x] Verify the refactored code produces the same result as Task 1 when run at a single scale.
 
 ### 2.2 Build the image pyramid
 
-- [ ] Implement the helper:
+- [x] Implement the helper:
 
   ```python
   def pyramid(im, max_scale):
@@ -143,23 +143,23 @@ The idea is to turn the two-channel `(u, v)` field into a color image where **hu
   ```
 
   This produces `[original, halved, quartered, ...]` up to `max_scale` levels.
-- [ ] Call `pyramid(...)` on both `I` and `J`. For the experiment, limit yourself to 2 or 3 scales — more levels tend to accumulate interpolation errors in practice.
+- [x] Call `pyramid(...)` on both `I` and `J`. For the experiment, limit yourself to 2 or 3 scales — more levels tend to accumulate interpolation errors in practice.
 
 ### 2.3 Main multi-scale loop
 
 The algorithm iterates from the smallest scale up to the original. At each step you add the flow from the current scale to a running total.
 
-- [ ] Pick the smallest-scale frames as the starting point:
+- [x] Pick the smallest-scale frames as the starting point:
 
   ```python
   I = IP[-1]
   J = JP[-1]
   ```
 
-- [ ] Create two accumulator arrays `U` and `V` (full image size, zeros) for the total flow.
-- [ ] Loop over scales from smallest to largest. For each scale `s` (with `s = max_scale - 1` at the coarsest, down to `s = 0` at the original):
-  - [ ] Compute `u, v = of(J_org, I, J, ...)` at the current scale.
-  - [ ] **Resize the flow** to the next larger scale, doubling the spatial dimensions **and** doubling the numerical values of the vectors:
+- [x] Create two accumulator arrays `U` and `V` (full image size, zeros) for the total flow.
+- [x] Loop over scales from smallest to largest. For each scale `s` (with `s = max_scale - 1` at the coarsest, down to `s = 0` at the original):
+  - [x] Compute `u, v = of(J_org, I, J, ...)` at the current scale.
+  - [x] **Resize the flow** to the next larger scale, doubling the spatial dimensions **and** doubling the numerical values of the vectors:
 
     ```python
     u_up = cv2.resize((2**s) * u, (0, 0), fx=2**s, fy=2**s, interpolation=cv2.INTER_LINEAR)
@@ -167,34 +167,34 @@ The algorithm iterates from the smallest scale up to the original. At each step 
     ```
 
     Doubling the *values* is critical: a displacement of 5 px at scale 1/2 corresponds to 10 px at the original resolution.
-  - [ ] Add `u_up`, `v_up` into the accumulators `U`, `V`.
+  - [x] Add `u_up`, `v_up` into the accumulators `U`, `V`.
 
 ### 2.4 Warping the second image
 
 After estimating flow at a coarse scale, you want to **move the pixels of `J` back towards their positions in `I`** according to that flow, so that at the next finer scale only the small residual motion remains to be estimated.
 
-- [ ] Make a copy `J_new` of `J` at the next (larger) scale.
-- [ ] For each pixel `(j, i)` (use two `for` loops, and guard against going out of bounds), set:
+- [x] Make a copy `J_new` of `J` at the next (larger) scale.
+- [x] For each pixel `(j, i)` (use two `for` loops, and guard against going out of bounds), set:
 
   ```python
   J_new[j, i] = J[j + v_estimate, i + u_estimate]
   ```
 
   using the integer flow values already computed and upscaled for this scale.
-- [ ] Visually check that `J_new` now looks close to `I` — if so, the warping step is correct.
-- [ ] Assign `J = J_new` for the next iteration, and set `I` to the original frame at the new scale.
-- [ ] **Do not warp** at the finest (original) scale — at that point you just compute the final residual flow and add it to the accumulator.
+- [x] Visually check that `J_new` now looks close to `I` — if so, the warping step is correct.
+- [x] Assign `J = J_new` for the next iteration, and set `I` to the original frame at the new scale.
+- [x] **Do not warp** at the finest (original) scale — at that point you just compute the final residual flow and add it to the accumulator.
 
 ### 2.5 Final visualization and comparison
 
-- [ ] Visualize the **total** flow `(U, V)` (summed over all scales) with `vis_flow(...)`.
-- [ ] Compare with:
+- [x] Visualize the **total** flow `(U, V)` (summed over all scales) with `vis_flow(...)`.
+- [x] Compare with:
   - Single-scale block matching using a **large** window (expensive).
   - Single-scale block matching using a **small** window (fast but fails on large motion).
   - Multi-scale block matching using a **small** window (fast *and* handles large motion).
-- [ ] Note the runtime of each configuration.
-- [ ] Check on a frame pair with large displacements (e.g. the `highway` sequence): did the multi-scale version successfully recover the flow where the small-window single-scale version failed?
-- [ ] Be aware that, due to interpolation errors when upscaling flow and downscaling images, pyramidal flow is never perfect. 2–4 scales is usually the sweet spot.
+- [x] Note the runtime of each configuration.
+- [x] Check on a frame pair with large displacements (e.g. the `highway` sequence): did the multi-scale version successfully recover the flow where the small-window single-scale version failed?
+- [x] Be aware that, due to interpolation errors when upscaling flow and downscaling images, pyramidal flow is never perfect. 2–4 scales is usually the sweet spot.
 
 ---
 
