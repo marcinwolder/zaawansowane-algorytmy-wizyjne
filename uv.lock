@@ -193,6 +193,12 @@ wheels = [
 ]
 
 [[package]]
+name = "imutils"
+version = "0.5.4"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/3f/d3/ecb4d108f6c1041d24842a345ee0123cd7f366ba75cf122601e856d42ba2/imutils-0.5.4.tar.gz", hash = "sha256:03827a9fca8b5c540305c0844a62591cf35a0caec199cb0f2f0a4a0fb15d8f24", size = 17240, upload-time = "2021-01-15T10:53:17.816Z" }
+
+[[package]]
 name = "jinja2"
 version = "3.1.6"
 source = { registry = "https://pypi.org/simple" }
@@ -836,6 +842,7 @@ name = "zaw"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "imutils" },
     { name = "matplotlib" },
     { name = "opencv-python" },
     { name = "pandas" },
@@ -844,6 +851,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "imutils", specifier = ">=0.5.4" },
     { name = "matplotlib", specifier = ">=3.10.8" },
     { name = "opencv-python", specifier = ">=4.13.0.92" },
     { name = "pandas", specifier = ">=3.0.2" },
