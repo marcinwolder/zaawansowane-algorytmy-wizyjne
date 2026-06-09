@@ -1,0 +1,16 @@
+[project]
+name = "lab13"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "graphgen>=0.0.7",
+    "matplotlib>=3.10.8",
+    "opencv-python>=4.13.0.92",
+    "pandas>=3.0.2",
+    "snntorch>=0.9.4",
+    "tensorflow>=2.21.0",
+    "torch>=2.11.0",
+    "tqdm>=4.68.2",
+]
